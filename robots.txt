@@ -1,0 +1,20 @@
+User-agent: *
+Disallow: /gestion
+Allow: /
+Disallow: /api/
+Disallow: /includes/
+Disallow: /mail/
+Disallow: /app/
+Disallow: /local/
+Disallow: /tecnobot/
+Disallow: /referidos/
+Disallow: /formula/
+Disallow: /antojos/
+Disallow: /tutamona/
+Disallow: /jabru/
+Disallow: /comprobante
+Disallow: /pago-demo
+Disallow: /*?ref=
+Disallow: /*?token=
+
+Sitemap: https://tecnoxpert.com/sitemap.xml

@@ -1,0 +1,4 @@
+Contact: mailto:contacto@tecnoxpert.com
+Canonical: https://tecnoxpert.com/.well-known/security.txt
+Preferred-Languages: es
+Expires: 2027-07-23T23:59:59Z

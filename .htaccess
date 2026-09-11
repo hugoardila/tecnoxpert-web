@@ -1,0 +1,86 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+ServerSignature Off
+
+<IfModule mod_mime.c>
+  AddType image/x-icon .ico
+  AddType image/png .png
+  AddType image/webp .webp
+  AddType text/css .css
+  AddType application/javascript .js
+  AddType application/xml .xml
+  AddType text/plain .txt
+</IfModule>
+
+ErrorDocument 404 /404.php
+ErrorDocument 410 /410.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Keep certificate challenges reachable.
+  RewriteRule ^\.well-known/acme-challenge/ - [L]
+
+  # Canonical public origin.
+  RewriteCond %{HTTP_HOST} ^www\.tecnoxpert\.com$ [NC]
+  RewriteRule ^ https://tecnoxpert.com%{REQUEST_URI} [R=301,L]
+
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://tecnoxpert.com%{REQUEST_URI} [R=301,L]
+
+  # Removed content: never redirect these URLs to the home page.
+  RewriteRule ^jabru(?:/.*|[.-].*)?$ - [R=410,L,NC]
+
+  # Private and sensitive resources are not web content.
+  RewriteRule (^|/)\.(?!well-known/) - [R=404,L]
+  RewriteRule ^(?:includes|private|ops|mail/logs)(?:/|$) - [R=404,L,NC]
+  RewriteRule \.(?:bak|conf|env|ini|log|md|sql|sqlite|tar|gz|zip|json|ya?ml)$ - [R=404,L,NC]
+
+  # Canonical redirects for previous public URLs.
+  RewriteRule ^index\.html$ / [R=301,L,NC]
+  RewriteRule ^portafolio\.html$ /portafolio [R=301,L,NC]
+  RewriteRule ^sobrenosotros\.html$ /informacion-legal [R=301,L,NC]
+  RewriteRule ^zona-pagos\.html$ /pagar [R=301,L,NC]
+  RewriteRule ^(?:confirmacion|respuesta)\.html$ /pagar [R=301,L,NC]
+
+  # Clean public routes.
+  RewriteRule ^servicios/?$ servicios.php [L,QSA]
+  RewriteRule ^portafolio/?$ portafolio.php [L,QSA]
+  RewriteRule ^contacto/?$ contacto.php [L,QSA]
+  RewriteRule ^pagar/?$ pagar.php [L,QSA]
+  RewriteRule ^aceptar-cotizacion/?$ aceptar-cotizacion.php [L,QSA]
+  RewriteRule ^seleccionar-pago/?$ seleccionar-pago.php [L,QSA]
+  RewriteRule ^checkout-epayco/?$ checkout-epayco.php [L,QSA]
+  RewriteRule ^retorno-pago/?$ retorno-pago.php [L,QSA]
+  RewriteRule ^pago-transferencia/?$ pago-transferencia.php [L,QSA]
+  RewriteRule ^reportar-transferencia/?$ reportar-transferencia.php [L,QSA]
+  RewriteRule ^gestion/?$ gestion.php [L,QSA]
+  RewriteRule ^pago-demo/?$ pago-demo.php [L,QSA]
+  RewriteRule ^comprobante/?$ comprobante.php [L,QSA]
+  RewriteRule ^(informacion-legal|terminos-condiciones|politica-privacidad|tratamiento-datos|politica-reembolsos|politica-entregas|politica-garantias)/?$ legal.php?documento=$1 [L,QSA]
+
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  RewriteRule ^ - [R=404,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header unset X-Powered-By
+  Header always unset X-Powered-By
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+<IfModule php_module>
+  php_flag display_errors Off
+  php_flag expose_php Off
+  php_value session.cookie_httponly 1
+  php_value session.cookie_samesite Lax
+</IfModule>
